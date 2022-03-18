@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
+import React, { useEffect } from "react";
+import { useRecoilState, useRecoilValue } from "recoil";
 import {
   selectedGenreState,
   selectedSubState,
@@ -7,21 +7,26 @@ import {
 import { btnStateRecoil } from "../../atoms/btn";
 
 const Subgenre = ({ setSteps, steps, setCurrentStep }) => {
-  const [selectGenre, setSelectedGenre] = useRecoilState(selectedGenreState);
+  const selectGenre = useRecoilValue(selectedGenreState);
   const [selectSubGenre, setSelectedSubGenre] =
     useRecoilState(selectedSubState);
   const [btnState, setBtnState] = useRecoilState(btnStateRecoil);
-  const [select, setSelect] = useState(false);
 
   useEffect(() => {
-    setBtnState({ ...btnState, nextBtn: true });
-  }, []);
-  const selectHandler = (g, i) => {
+    if (selectSubGenre.selected.id) {
+      setBtnState({
+        ...btnState,
+        nextBtn: false,
+        btnDirection: "next",
+      });
+    } else {
+      setBtnState({ ...btnState, nextBtn: true });
+    }
+  }, [selectGenre.selected.id]);
+  const selectHandler = (genre, i) => {
     setBtnState({ ...btnState, nextBtn: false });
-    setSelectedSubGenre({ selected: g, index: i });
-    setSelect(i);
+    setSelectedSubGenre({ selected: genre, index: i });
   };
-  console.log(selectSubGenre.selected);
   const handleAddSub = () => {
     let newSteps = steps.filter((s) => s !== "...");
     newSteps.push("Add new subgenre", "Information");
@@ -30,17 +35,18 @@ const Subgenre = ({ setSteps, steps, setCurrentStep }) => {
 
     setCurrentStep((prevState) => prevState + 1);
   };
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-center">
-      {selectGenre.selected.subgenres.map((g, i) => (
+      {selectGenre.selected.subgenres.map((genre, i) => (
         <div
           key={i}
-          onClick={() => selectHandler(g, i)}
+          onClick={() => selectHandler(genre, i)}
           className={` p-4 border-2 text-center cursor-pointer hover:bg-gray-600 hover:text-white rounded-2xl ${
-            select === i && "bg-gray-600"
+            selectSubGenre.selected.id === genre.id && "bg-gray-600"
           }`}
         >
-          {g.name || g.subgenreName}
+          {genre.name || genre.subgenreName}
         </div>
       ))}
       <div

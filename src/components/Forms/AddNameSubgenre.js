@@ -10,6 +10,7 @@ export default function AddNameSubgenre({
   setSteps,
   setCurrentStep,
   setBook,
+  book,
 }) {
   const {
     register,
@@ -26,9 +27,9 @@ export default function AddNameSubgenre({
     if (data) {
       setBook(data);
       setCurrentStep(4);
-      console.log(data);
     }
   };
+
   const handleBack = () => {
     let newStep = currentStep;
     steps.splice(2, 2, "...");
@@ -51,7 +52,11 @@ export default function AddNameSubgenre({
               className="inputForm mb-1"
               type="text"
               placeholder="Subgenre name"
-              {...register("subgenreName", { required: true, maxLength: 80 })}
+              {...register("subgenreName", {
+                required: true,
+                maxLength: 80,
+                value: book.subgenreName,
+              })}
             />
             {errors.subgenreName?.type === "required" && (
               <p className="text-xs text-red-600">Subgenre Name is required</p>
@@ -64,6 +69,7 @@ export default function AddNameSubgenre({
               className="checkboxForm"
               {...register("isDescriptionRequired", {
                 maxLength: 100,
+                value: book.isDescriptionRequired,
               })}
             />
 
@@ -72,7 +78,7 @@ export default function AddNameSubgenre({
               Description is required for this subgenre
             </p>
           </div>
-        </div>{" "}
+        </div>
         <StepperControl
           type="submit"
           handleSubmit={handleClick}

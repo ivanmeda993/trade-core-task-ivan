@@ -43,6 +43,7 @@ function App() {
   const finishHandler = () => {
     setCurrentStep(1);
     setSteps(["Genre", "Subgenre", "..."]);
+    setBook({});
     resetGenre();
     resetSub();
     resetBtn();
@@ -52,7 +53,7 @@ function App() {
   const displayStep = (step) => {
     switch (step) {
       case 1:
-        return <Genre data={data} setData={setData} />;
+        return <Genre data={data} />;
       case 2:
         return (
           <Subgenre
@@ -70,6 +71,7 @@ function App() {
             steps={steps}
             setBook={setBook}
             setSteps={setSteps}
+            book={book}
             setCurrentStep={setCurrentStep}
           />
         );

@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import StepperControl from "../StepperControl";
 import { nanoid } from "nanoid";
 import { useRecoilValue } from "recoil";
 import { selectedGenreState } from "../../atoms/selectedGenre";
@@ -11,7 +10,6 @@ export default function AddInfo({
   steps,
   setSteps,
   setCurrentStep,
-  setBook,
   book,
   setData,
   data,
@@ -149,7 +147,7 @@ export default function AddInfo({
             }`}
           >
             back
-          </button>{" "}
+          </button>
           <button
             type="submit"
             className="bg-gray-700  shadow-lg text-white uppercase py-2 px-4 rounded-xl font-semibold cursor-pointer hover:bg-gray-900 hover:text-white transition duration-200 ease-in-out disabled:bg-slate-200 "

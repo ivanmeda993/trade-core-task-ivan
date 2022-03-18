@@ -1,17 +1,16 @@
 import React from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import { btnStateRecoil } from "../atoms/btn";
 
 const StepperControl = ({
   currentStep,
   handleClick,
   steps,
-
   handleBack,
   handleSubmit,
   type,
 }) => {
-  const [btnState, setBtnState] = useRecoilState(btnStateRecoil);
+  const btnState = useRecoilValue(btnStateRecoil);
 
   return (
     <div className="container flex justify-around mt-4 mb-8">
@@ -24,7 +23,7 @@ const StepperControl = ({
         }`}
       >
         back
-      </button>{" "}
+      </button>
       <button
         type={type}
         disabled={btnState.nextBtn}
