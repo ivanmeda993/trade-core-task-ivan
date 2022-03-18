@@ -19,7 +19,7 @@ const Subgenre = ({ setSteps, steps, setCurrentStep }) => {
   const selectHandler = (g, i) => {
     setBtnState({ ...btnState, nextBtn: false });
     setSelectedSubGenre({ selected: g, index: i });
-    setSelect(g.id);
+    setSelect(i);
   };
   console.log(selectSubGenre.selected);
   const handleAddSub = () => {
@@ -37,7 +37,7 @@ const Subgenre = ({ setSteps, steps, setCurrentStep }) => {
           key={i}
           onClick={() => selectHandler(g, i)}
           className={` p-4 border-2 text-center cursor-pointer hover:bg-gray-600 hover:text-white rounded-2xl ${
-            select === g.id && "bg-gray-600"
+            select === i && "bg-gray-600"
           }`}
         >
           {g.name || g.subgenreName}

@@ -26,34 +26,31 @@ export default function AddInfo({
   const id = nanoid(21);
 
   let newArray = [...data];
+  let newBook = { ...book };
 
   const handleClick = (bookData) => {
     setLoading(true);
     if (bookData) {
-      setBook((prevState) => ({ ...prevState, ...bookData, id }));
+      newBook = { ...newBook, ...bookData, id };
+      newBook = Object.assign(bookData, newBook);
     }
+
     newArray[selectedGenre.index] = {
       ...newArray[selectedGenre.index],
-      subgenres: [...newArray[selectedGenre.index].subgenres, book],
+      subgenres: [...newArray[selectedGenre.index].subgenres, newBook],
     };
     setLoading(true);
+    const uniqArr = newArray.filter(
+      (v, i, a) => a.findIndex((t) => t.id === v.id) === i
+    );
+    localStorage.setItem("books", JSON.stringify(uniqArr));
+    setData(newArray);
+    let details = JSON.parse(localStorage.getItem("books"));
+    console.log("NEW DATA ==>", details);
+    setLoading(false);
+    setCurrentStep("final");
   };
-  useEffect(() => {
-    if (loading) {
-      const timeout = setTimeout(() => {
-        const uniqArr = newArray.filter(
-          (v, i, a) => a.findIndex((t) => t.id === v.id) === i
-        );
-        localStorage.setItem("books", JSON.stringify(uniqArr));
-        setData(uniqArr);
-        let details = JSON.parse(localStorage.getItem("books"));
-        console.log("NEW DATA ==>", details);
-        setCurrentStep("final");
-        setLoading(false);
-      }, 1000);
-      return () => clearTimeout(timeout);
-    }
-  }, [loading]);
+
   const handleBack = () => {
     let newStep = currentStep;
     setSteps(steps);
@@ -144,13 +141,22 @@ export default function AddInfo({
           <input type="submit" hidden />
         </div>
 
-        <StepperControl
-          type="submit"
-          handleSubmit={handleClick}
-          handleBack={handleBack}
-          currentStep={currentStep}
-          steps={steps}
-        />
+        <div className="container flex justify-around mt-4 mb-8">
+          <button
+            onClick={() => handleBack()}
+            className={`bg-white text-slate-400 uppercase py-2 px-4 rounded-xl font-semibold cursor-pointer border-2 border-slate-300 hover:bg-slate-700 hover:text-white transition duration-200 ease-in-out ${
+              currentStep === 1 && "opacity-50 cursor-not-allowed"
+            }`}
+          >
+            back
+          </button>{" "}
+          <button
+            type="submit"
+            className="bg-gray-700  shadow-lg text-white uppercase py-2 px-4 rounded-xl font-semibold cursor-pointer hover:bg-gray-900 hover:text-white transition duration-200 ease-in-out disabled:bg-slate-200 "
+          >
+            Complete
+          </button>
+        </div>
       </form>
     </>
   );
