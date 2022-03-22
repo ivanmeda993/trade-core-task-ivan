@@ -1,6 +1,5 @@
 import React from "react";
-import { useRecoilValue } from "recoil";
-import { btnStateRecoil } from "../atoms/btn";
+import { useSelector } from "react-redux";
 
 const StepperControl = ({
   currentStep,
@@ -10,14 +9,12 @@ const StepperControl = ({
   handleSubmit,
   type,
 }) => {
-  const btnState = useRecoilValue(btnStateRecoil);
+  const nextBtn = useSelector((state) => state.btn.nextBtn);
 
   return (
     <div className="container flex justify-around mt-4 mb-8">
       <button
-        onClick={() =>
-          handleBack ? handleBack() : handleClick(btnState.btnDirectionBack)
-        }
+        onClick={() => (handleBack ? handleBack() : handleClick("back"))}
         className={`bg-white text-slate-400 uppercase py-2 px-4 rounded-xl font-semibold cursor-pointer border-2 border-slate-300 hover:bg-slate-700 hover:text-white transition duration-200 ease-in-out ${
           currentStep === 1 && "opacity-50 cursor-not-allowed"
         }`}
@@ -26,10 +23,8 @@ const StepperControl = ({
       </button>
       <button
         type={type}
-        disabled={btnState.nextBtn}
-        onClick={() =>
-          handleSubmit ? handleSubmit() : handleClick(btnState.btnDirection)
-        }
+        disabled={nextBtn}
+        onClick={() => (handleSubmit ? handleSubmit() : handleClick("next"))}
         className="bg-gray-700  shadow-lg text-white uppercase py-2 px-4 rounded-xl font-semibold cursor-pointer hover:bg-gray-900 hover:text-white transition duration-200 ease-in-out disabled:bg-slate-200 "
       >
         {currentStep === steps.length ? "Complete" : "Next"}

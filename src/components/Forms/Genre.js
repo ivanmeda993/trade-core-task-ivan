@@ -1,28 +1,21 @@
 import React, { useEffect } from "react";
-import { selectedGenreState } from "../../atoms/selectedGenre";
-import { useRecoilState } from "recoil";
-import { btnStateRecoil } from "../../atoms/btn";
+import { useDispatch, useSelector } from "react-redux";
+import { selectGenre, selectSubGenre } from "../../reducers/genreReducer";
+import { nextBtn } from "../../reducers/btnReducer";
 
 const Genre = ({ data }) => {
-  const [selectGenre, setSelectedGenre] = useRecoilState(selectedGenreState);
-  const [btnState, setBtnState] = useRecoilState(btnStateRecoil);
+  const selectedGenre = useSelector((state) => state.selectedGenre.selected);
+  const dispatch = useDispatch();
   useEffect(() => {
-    if (selectGenre.selected.id) {
-      setBtnState({
-        ...btnState,
-        nextBtn: false,
-        btnDirection: "next",
-      });
+    if (selectedGenre.id) {
+      dispatch(nextBtn(false));
     }
   }, []);
 
-  const selectHandler = (selected, i) => {
-    setSelectedGenre({ selected: selected, index: i });
-    return setBtnState({
-      ...btnState,
-      nextBtn: false,
-      btnDirection: "next",
-    });
+  const selectHandler = (selected, index) => {
+    dispatch(selectGenre({ selected, index }));
+    dispatch(selectSubGenre({}));
+    dispatch(nextBtn(false));
   };
 
   return (
@@ -32,7 +25,7 @@ const Genre = ({ data }) => {
           key={genre.id}
           onClick={() => selectHandler(genre, i)}
           className={`p-4 border-2 text-center cursor-pointer hover:bg-gray-600 hover:text-white rounded-2xl ${
-            selectGenre.selected.id === genre.id && "bg-gray-600"
+            selectedGenre.id === genre.id && "bg-gray-600"
           }`}
         >
           {genre.name}

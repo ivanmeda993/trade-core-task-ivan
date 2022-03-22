@@ -7,27 +7,21 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import AddNameSubgenre from "./components/Forms/AddNameSubgenre";
 import ShowInfo from "./components/Forms/ShowInfo";
-import { useRecoilValue, useResetRecoilState } from "recoil";
-import { btnStateRecoil } from "./atoms/btn";
 import AddInfo from "./components/Forms/AddInfo";
 import Final from "./components/Forms/Final";
-import {
-  allGenreState,
-  selectedGenreState,
-  selectedSubState,
-} from "./atoms/selectedGenre";
+import { useDispatch, useSelector } from "react-redux";
+import { resetBtn } from "./reducers/btnReducer";
+import { resetGenre } from "./reducers/genreReducer";
 
 function App() {
   const [currentStep, setCurrentStep] = useState(1);
   const [steps, setSteps] = useState(["Genre", "Subgenre", "..."]);
-  const resetBtn = useResetRecoilState(btnStateRecoil);
-  const btnState = useRecoilValue(btnStateRecoil);
-  const resetGenre = useResetRecoilState(selectedGenreState);
-  const resetSub = useResetRecoilState(selectedSubState);
-  const resetAllGenre = useResetRecoilState(allGenreState);
+
   const [data, setData] = useState([]);
   const [book, setBook] = useState({});
   const localData = JSON.parse(localStorage.getItem("books"));
+  const { isAddForm } = useSelector((state) => state.btn);
+  const dispatch = useDispatch();
   useEffect(() => {
     if (!localData) {
       axios.get("data.json").then((res) => {
@@ -44,10 +38,8 @@ function App() {
     setCurrentStep(1);
     setSteps(["Genre", "Subgenre", "..."]);
     setBook({});
-    resetGenre();
-    resetSub();
-    resetBtn();
-    resetAllGenre();
+    dispatch(resetBtn());
+    dispatch(resetGenre());
   };
 
   const displayStep = (step) => {
@@ -63,7 +55,7 @@ function App() {
           />
         );
       case 3:
-        return !btnState.isAddForm ? (
+        return !isAddForm ? (
           <ShowInfo steps={steps} />
         ) : (
           <AddNameSubgenre
@@ -121,7 +113,7 @@ function App() {
       </div>
       <div className="my-10 p-10 ">{displayStep(currentStep)}</div>
       {/*  Control*/}
-      {!btnState.isAddForm && (
+      {!isAddForm && (
         <StepperControl
           handleClick={handleClick}
           currentStep={currentStep}

@@ -3,14 +3,14 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-
-import { RecoilRoot } from "recoil";
+import { Provider } from "react-redux";
+import { store } from "./reducers/store";
 
 ReactDOM.render(
   <React.StrictMode>
-    <RecoilRoot>
+    <Provider store={store}>
       <App />
-    </RecoilRoot>
+    </Provider>
   </React.StrictMode>,
   document.getElementById("root")
 );

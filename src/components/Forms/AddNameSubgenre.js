@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import StepperControl from "../StepperControl";
-import { useRecoilState } from "recoil";
-import { btnStateRecoil } from "../../atoms/btn";
+import { isAddFormHandler, nextBtn } from "../../reducers/btnReducer";
+import { useDispatch } from "react-redux";
 
 export default function AddNameSubgenre({
   currentStep,
@@ -17,12 +17,10 @@ export default function AddNameSubgenre({
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const [btnState, setBtnState] = useRecoilState(btnStateRecoil);
-
+  const dispatch = useDispatch();
   useEffect(() => {
-    setBtnState({ ...btnState, nextBtn: false });
+    dispatch(nextBtn(false));
   }, []);
-
   const handleClick = (data) => {
     if (data) {
       setBook(data);
@@ -34,9 +32,8 @@ export default function AddNameSubgenre({
     let newStep = currentStep;
     steps.splice(2, 2, "...");
     setSteps(steps);
-    setBtnState({ ...btnState, isAddForm: false });
+    dispatch(isAddFormHandler(false));
     newStep--;
-
     return newStep > 0 && newStep <= steps.length && setCurrentStep(newStep);
   };
 

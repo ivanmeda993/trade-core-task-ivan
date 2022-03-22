@@ -1,49 +1,39 @@
 import React, { useEffect } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
-import {
-  selectedGenreState,
-  selectedSubState,
-} from "../../atoms/selectedGenre";
-import { btnStateRecoil } from "../../atoms/btn";
+import { useDispatch, useSelector } from "react-redux";
+import { selectSubGenre } from "../../reducers/genreReducer";
+import { isAddFormHandler, nextBtn } from "../../reducers/btnReducer";
 
 const Subgenre = ({ setSteps, steps, setCurrentStep }) => {
-  const selectGenre = useRecoilValue(selectedGenreState);
-  const [selectSubGenre, setSelectedSubGenre] =
-    useRecoilState(selectedSubState);
-  const [btnState, setBtnState] = useRecoilState(btnStateRecoil);
+  const dispatch = useDispatch();
+  const { subGenre, selected } = useSelector((state) => state.selectedGenre);
 
   useEffect(() => {
-    if (selectSubGenre.selected.id) {
-      setBtnState({
-        ...btnState,
-        nextBtn: false,
-        btnDirection: "next",
-      });
+    if (!subGenre.id) {
+      dispatch(nextBtn(true));
     } else {
-      setBtnState({ ...btnState, nextBtn: true });
+      dispatch(nextBtn(false));
     }
-  }, [selectGenre.selected.id]);
-  const selectHandler = (genre, i) => {
-    setBtnState({ ...btnState, nextBtn: false });
-    setSelectedSubGenre({ selected: genre, index: i });
+  }, []);
+  const selectHandler = (genre) => {
+    dispatch(selectSubGenre(genre));
+    dispatch(nextBtn(false));
   };
   const handleAddSub = () => {
     let newSteps = steps.filter((s) => s !== "...");
     newSteps.push("Add new subgenre", "Information");
     setSteps(newSteps);
-    setBtnState({ ...btnState, isAddForm: true });
-
+    dispatch(isAddFormHandler(true));
     setCurrentStep((prevState) => prevState + 1);
   };
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-center">
-      {selectGenre.selected.subgenres.map((genre, i) => (
+      {selected.subgenres.map((genre, i) => (
         <div
           key={i}
           onClick={() => selectHandler(genre, i)}
           className={` p-4 border-2 text-center cursor-pointer hover:bg-gray-600 hover:text-white rounded-2xl ${
-            selectSubGenre.selected.id === genre.id && "bg-gray-600"
+            subGenre.id === genre.id && "bg-gray-600"
           }`}
         >
           {genre.name || genre.subgenreName}

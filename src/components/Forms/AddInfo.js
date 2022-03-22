@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { nanoid } from "nanoid";
-import { useRecoilValue } from "recoil";
-import { selectedGenreState } from "../../atoms/selectedGenre";
 import Loading from "../Loading";
+import { useSelector } from "react-redux";
 
 export default function AddInfo({
   currentStep,
@@ -19,7 +18,7 @@ export default function AddInfo({
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const selectedGenre = useRecoilValue(selectedGenreState);
+  const { index } = useSelector((state) => state.selectedGenre);
   const [loading, setLoading] = useState(false);
   const id = nanoid(21);
 
@@ -31,13 +30,13 @@ export default function AddInfo({
     if (bookData) {
       newBook = { ...newBook, ...bookData, id };
       newBook = Object.assign(bookData, newBook);
+      setLoading(false);
     }
 
-    newArray[selectedGenre.index] = {
-      ...newArray[selectedGenre.index],
-      subgenres: [...newArray[selectedGenre.index].subgenres, newBook],
+    newArray[index] = {
+      ...newArray[index],
+      subgenres: [...newArray[index].subgenres, newBook],
     };
-    setLoading(true);
     const uniqArr = newArray.filter(
       (v, i, a) => a.findIndex((t) => t.id === v.id) === i
     );
@@ -45,7 +44,6 @@ export default function AddInfo({
     setData(newArray);
     let details = JSON.parse(localStorage.getItem("books"));
     console.log("NEW DATA ==>", details);
-    setLoading(false);
     setCurrentStep("final");
   };
 
